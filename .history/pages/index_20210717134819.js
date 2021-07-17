@@ -1,4 +1,4 @@
-import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AluraCommons'
+import { AlurakutMenu } from '../src/lib/AluraCommons'
 import { ProfileRelationsWrapper } from '../src/components/ProfileRelationsWrapper'
 import MainWrapper from '../src/components/MainWrapper'
 import Box from '../src/components/Box'
@@ -26,10 +26,7 @@ export default function Home() {
           <ProfileSidebar githubUser={githubUser} />
         </div>
         <div className="mainArea" style={{ gridArea: 'mainArea' }}>
-          <Box>
-            <h1 className="title">Welcome</h1>
-            <OrkutNostalgicIconSet />
-          </Box>
+          <Box>main header</Box>
           <Box>main content</Box>
         </div>
         <div className="sideArea" style={{ gridArea: 'sideArea' }}>
@@ -38,12 +35,10 @@ export default function Home() {
             <ul>
               { friends.map((githubUser) => {
                 return (
-                  <li>
-                    <a href={`/user/${githubUser}`} key={githubUser}>
-                      <img src={`https://github.com/${githubUser}.png`} />
-                      <span>{githubUser}</span>
-                    </a>
-                  </li>
+                  <a href={`/user/${githubUser}`} key={githubUser}>
+                    <img src={`https://github.com/${githubUser}.png`} />
+                    <span>{githubUser}</span>
+                  </a>
                 )  
               }) }
             </ul>

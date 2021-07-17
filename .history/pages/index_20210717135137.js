@@ -1,4 +1,4 @@
-import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AluraCommons'
+import { AlurakutMenu } from '../src/lib/AluraCommons'
 import { ProfileRelationsWrapper } from '../src/components/ProfileRelationsWrapper'
 import MainWrapper from '../src/components/MainWrapper'
 import Box from '../src/components/Box'
@@ -28,7 +28,6 @@ export default function Home() {
         <div className="mainArea" style={{ gridArea: 'mainArea' }}>
           <Box>
             <h1 className="title">Welcome</h1>
-            <OrkutNostalgicIconSet />
           </Box>
           <Box>main content</Box>
         </div>

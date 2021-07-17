@@ -1,35 +1,13 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
-import { AlurakutStyles } from '../src/lib/AluraCommons'
 
 const GlobalStyle = createGlobalStyle`
-  /* reset css */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
-
   body {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #D9E6F6;
-  }
 
-  #__next {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
+    background-color: ${({ theme }) => theme.colors.backgroundDefault};
   }
-
-  ${AlurakutStyles}
 `
 
 const theme = {

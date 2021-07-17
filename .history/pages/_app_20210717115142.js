@@ -1,5 +1,4 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
-import { AlurakutStyles } from '../src/lib/AluraCommons'
 
 const GlobalStyle = createGlobalStyle`
   /* reset css */
@@ -7,12 +6,6 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-  }
-
-  img {
-    max-width: 100%;
-    height: auto;
-    display: block;
   }
 
   body {
@@ -28,8 +21,6 @@ const GlobalStyle = createGlobalStyle`
     min-height: 100vh;
     flex-direction: column;
   }
-
-  ${AlurakutStyles}
 `
 
 const theme = {
