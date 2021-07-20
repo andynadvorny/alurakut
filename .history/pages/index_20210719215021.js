@@ -1,6 +1,4 @@
 import React from 'react'
-import nookies from 'nookies'
-import jwt from 'jsonwebtoken'
 import { 
   AlurakutMenu, 
   AlurakutProfileSidebarMenuDefault, 
@@ -183,24 +181,10 @@ export default function Home(props) {
   )
 }
 
-export async function getServerSideProps(ctx) {
-  const cookies = nookies.get(ctx)
-  const token = cookies.USER_TOKEN
-  const decodedToken = jwt.decode(token);
-  const githubUser = decodedToken?.githubUser;
-
-  if (!githubUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
+export async function getServerSideProps(context) {
   return {
     props: {
-      githubUser: githubUser
+      githubUser: 'teste'
     },
   }
 }

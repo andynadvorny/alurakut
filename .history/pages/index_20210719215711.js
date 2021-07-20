@@ -186,17 +186,7 @@ export default function Home(props) {
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx)
   const token = cookies.USER_TOKEN
-  const decodedToken = jwt.decode(token);
-  const githubUser = decodedToken?.githubUser;
-
-  if (!githubUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
+  const { githubUser } = jwt.decode(token)
 
   return {
     props: {

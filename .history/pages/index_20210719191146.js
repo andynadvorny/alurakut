@@ -1,6 +1,4 @@
 import React from 'react'
-import nookies from 'nookies'
-import jwt from 'jsonwebtoken'
 import { 
   AlurakutMenu, 
   AlurakutProfileSidebarMenuDefault, 
@@ -34,10 +32,10 @@ function ProfileRelations(props) {
       <ul>
         { props.items.slice(0, 6).map((githubUser) => {
           return (
-            <li key={githubUser.node_id}>
-              <a href={`/user/${githubUser.login}`}>
-                <img src={githubUser.avatar_url} />
-                <span>{githubUser.login}</span>
+            <li key={githubUser}>
+              <a href={`/user/${githubUser}`}>
+                <img src={`https://github.com/${githubUser}.png`} />
+                <span>{githubUser}</span>
               </a>
             </li>
           )  
@@ -47,13 +45,13 @@ function ProfileRelations(props) {
   )
 }
 
-export default function Home(props) {
-  const githubUser = props.githubUser
+export default function Home() {
+  const githubUser = 'andynadvorny'
   const [friends, setFriends] = React.useState([])
   const [comunidades, setComunidades] = React.useState([]) 
   
   React.useEffect(() => {
-    fetch('https://api.github.com/users/peas/followers')
+    fetch('https://api.github;com/users/peas/followers')
     .then((response) => {
       if(response.ok) {
         return response.json()
@@ -116,24 +114,12 @@ export default function Home(props) {
               e.preventDefault()
               const dadosDoForm = new FormData(e.target)
               const newComunidade = {
-                title: dadosDoForm.get('title'),
-                imageUrl: dadosDoForm.get('cover'),
-                creatorSlug: githubUser
+                id: new Date(),
+                name: dadosDoForm.get('title'),
+                cover: dadosDoForm.get('cover')
               }
-
-              fetch('/api/comunidades', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newComunidade)
-              })
-              .then(async (res) => {
-                const data = await res.json()
-                const newComunidade = data.registroCriado
-                const updatedComunidades = [...comunidades, newComunidade]
-                setComunidades(updatedComunidades)
-              })
+              const updatedComunidades = [...comunidades, newComunidade]
+              setComunidades(updatedComunidades)
             }}>
               <div>
                 <input 
@@ -164,7 +150,7 @@ export default function Home(props) {
             { comunidades.slice(0, 6).map((comunidade) => {
               return (
                 <li key={comunidade.id}>
-                  <a href={`/communities/${comunidade.id}`}>
+                  <a href={`/user/${comunidade.title}`}>
                     <img src={comunidade.imageUrl} />
                     <span>{comunidade.title}</span>
                   </a>
@@ -181,26 +167,4 @@ export default function Home(props) {
       </MainWrapper>
     </>
   )
-}
-
-export async function getServerSideProps(ctx) {
-  const cookies = nookies.get(ctx)
-  const token = cookies.USER_TOKEN
-  const decodedToken = jwt.decode(token);
-  const githubUser = decodedToken?.githubUser;
-
-  if (!githubUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {
-      githubUser: githubUser
-    },
-  }
 }

@@ -1,6 +1,4 @@
 import React from 'react'
-import nookies from 'nookies'
-import jwt from 'jsonwebtoken'
 import { 
   AlurakutMenu, 
   AlurakutProfileSidebarMenuDefault, 
@@ -30,14 +28,14 @@ function ProfileSidebar(props) {
 function ProfileRelations(props) {
   return (
     <ProfileRelationsWrapper>
-      <h2 className="smallTitle">{props.title} ({props.items.length})</h2>
+      <h2 className="smallTitle">props.title ({props.items.length})</h2>
       <ul>
         { props.items.slice(0, 6).map((githubUser) => {
           return (
-            <li key={githubUser.node_id}>
-              <a href={`/user/${githubUser.login}`}>
-                <img src={githubUser.avatar_url} />
-                <span>{githubUser.login}</span>
+            <li key={githubUser}>
+              <a href={`/user/${githubUser}`}>
+                <img src={`https://github.com/${githubUser}.png`} />
+                <span>{githubUser}</span>
               </a>
             </li>
           )  
@@ -47,13 +45,17 @@ function ProfileRelations(props) {
   )
 }
 
-export default function Home(props) {
-  const githubUser = props.githubUser
+export default function Home() {
+  const githubUser = 'andynadvorny'
   const [friends, setFriends] = React.useState([])
-  const [comunidades, setComunidades] = React.useState([]) 
+  const [comunidades, setComunidades] = React.useState([{
+    id: new Date(),
+    name: 'namgi',
+    cover: 'https://github.com/namgi.png'
+  }]) 
   
   React.useEffect(() => {
-    fetch('https://api.github.com/users/peas/followers')
+    fetch('https://api.github;com/users/peas/followers')
     .then((response) => {
       if(response.ok) {
         return response.json()
@@ -62,35 +64,6 @@ export default function Home(props) {
     })
     .then((convertedResponse) => {
       setFriends(convertedResponse)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-
-    fetch('https://graphql.datocms.com/', {
-      method: 'POST',
-      headers: {
-        'Authorization': '5b36af0bb4a50d14c05fd64327e212',
-        'Content-Type':  'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ "query": `query {
-        allCommunities {
-          id,
-          title,
-          imageUrl,
-          creatorSlug
-        }
-      }`})
-    })
-    .then((response) => {
-      if(response.ok) {
-        return response.json()
-      }
-      throw new Error('Error fetching files :( ' + response.status)
-    })
-    .then((convertedResponse) => {
-      setComunidades(convertedResponse.data.allCommunities)
     })
     .catch((error) => {
       console.log(error)
@@ -116,24 +89,12 @@ export default function Home(props) {
               e.preventDefault()
               const dadosDoForm = new FormData(e.target)
               const newComunidade = {
-                title: dadosDoForm.get('title'),
-                imageUrl: dadosDoForm.get('cover'),
-                creatorSlug: githubUser
+                id: new Date(),
+                name: dadosDoForm.get('title'),
+                cover: dadosDoForm.get('cover')
               }
-
-              fetch('/api/comunidades', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newComunidade)
-              })
-              .then(async (res) => {
-                const data = await res.json()
-                const newComunidade = data.registroCriado
-                const updatedComunidades = [...comunidades, newComunidade]
-                setComunidades(updatedComunidades)
-              })
+              const updatedComunidades = [...comunidades, newComunidade]
+              setComunidades(updatedComunidades)
             }}>
               <div>
                 <input 
@@ -161,12 +122,12 @@ export default function Home(props) {
         <ProfileRelationsWrapper>
           <h2 className="smallTitle">Docks ({comunidades.length})</h2>
           <ul>
-            { comunidades.slice(0, 6).map((comunidade) => {
+            { comunidades.slice(0, 6).map((githubUser) => {
               return (
-                <li key={comunidade.id}>
-                  <a href={`/communities/${comunidade.id}`}>
-                    <img src={comunidade.imageUrl} />
-                    <span>{comunidade.title}</span>
+                <li key={githubUser}>
+                  <a href={`/user/${githubUser}`}>
+                    <img src={`https://github.com/${githubUser}.png`} />
+                    <span>{githubUser}</span>
                   </a>
                 </li>
               )  
@@ -181,26 +142,4 @@ export default function Home(props) {
       </MainWrapper>
     </>
   )
-}
-
-export async function getServerSideProps(ctx) {
-  const cookies = nookies.get(ctx)
-  const token = cookies.USER_TOKEN
-  const decodedToken = jwt.decode(token);
-  const githubUser = decodedToken?.githubUser;
-
-  if (!githubUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {
-      githubUser: githubUser
-    },
-  }
 }

@@ -1,6 +1,4 @@
 import React from 'react'
-import nookies from 'nookies'
-import jwt from 'jsonwebtoken'
 import { 
   AlurakutMenu, 
   AlurakutProfileSidebarMenuDefault, 
@@ -47,8 +45,8 @@ function ProfileRelations(props) {
   )
 }
 
-export default function Home(props) {
-  const githubUser = props.githubUser
+export default function Home() {
+  const githubUser = 'andynadvorny'
   const [friends, setFriends] = React.useState([])
   const [comunidades, setComunidades] = React.useState([]) 
   
@@ -181,26 +179,4 @@ export default function Home(props) {
       </MainWrapper>
     </>
   )
-}
-
-export async function getServerSideProps(ctx) {
-  const cookies = nookies.get(ctx)
-  const token = cookies.USER_TOKEN
-  const decodedToken = jwt.decode(token);
-  const githubUser = decodedToken?.githubUser;
-
-  if (!githubUser) {
-    return {
-      redirect: {
-        destination: '/login',
-        permanent: false,
-      },
-    }
-  }
-
-  return {
-    props: {
-      githubUser: githubUser
-    },
-  }
 }
